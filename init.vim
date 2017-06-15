@@ -107,4 +107,3 @@ colorscheme monokai-phoenix
 autocmd vimenter * NERDTree
 
 map <C-n> :NERDTreeToggle<CR>
-map <C-z> :u<CR>
