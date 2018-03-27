@@ -37,6 +37,25 @@ Plug 'tpope/vim-bundler', { 'for': ['ruby'] }
 Plug 'tpope/vim-endwise'
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Elixir Plug
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+" Syntax highlighting and filetype detection
+Plug 'elixir-editors/vim-elixir'
+
+" Completion and doc lookup
+" Plug 'slashmili/alchemist.vim'
+
+" Mix formatter
+Plug 'mhinz/vim-mix-format'
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => HTML Plug
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+Plug 'rstacruz/sparkup', { 'rtp': 'vim' }
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Themes Plug
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 Plug 'reewr/vim-monokai-phoenix'
@@ -53,9 +72,22 @@ Plug 'itchyny/lightline.vim'
 Plug 'ap/vim-buftabline'
 " Nerd tree
 Plug 'scrooloose/nerdtree'
+" Git Nerd tree
+Plug 'Xuyuanp/nerdtree-git-plugin'
+" Editor Config
+Plug 'editorconfig/editorconfig-vim'
 
 " Intelligent buffer closing
 Plug 'mhinz/vim-sayonara', { 'on': 'Sayonara' }
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Vim LSP
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+Plug 'prabirshrestha/async.vim'
+
+Plug 'prabirshrestha/vim-lsp'
+
+Plug 'prabirshrestha/asyncomplete.vim'
 
 call plug#end()
 
@@ -96,6 +128,17 @@ set nu
 
 set cursorline   " highlight current line
 
+set noshowmode
+
+let g:lightline = {
+  \ 'colorscheme': 'solarized',
+  \ 'component_function': {
+  \    'filename': 'LightLineFilename'
+  \ } 
+  \ }
+function! LightLineFilename()
+  return expand('%')
+endfunction
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Files, backups and undo
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -183,9 +226,11 @@ endfunction
 
 colorscheme iceberg 
 
-autocmd vimenter * NERDTree
+" autocmd vimenter * NERDTree
 
 map <C-n> :NERDTreeToggle<CR>
+
+nnoremap ; :
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Nerdtree settings
@@ -229,7 +274,6 @@ inoremap <expr><BS> deoplete#mappings#smart_close_popup()."\<C-h>"
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 call neomake#configure#automake('w')
 
-
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Vim Test settings
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -240,3 +284,21 @@ nmap <silent> <leader>a :TestSuite<CR>
 nmap <silent> <leader>l :TestLast<CR>
 nmap <silent> <leader>g :TestVisit<CR>
 let g:ackprg = 'ag --nogroup --nocolor --column'
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Vim Elixir LSP
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+augroup elixir_lsp
+  au!
+  au User lsp_setup call lsp#register_server({
+    \ 'name': 'elixir-ls',
+    \ 'cmd': {server_info->[&shell, &shellcmdflag, 'env ERL_LIBS=/home/bruno/vim_libs/elixir-ls/lsp mix elixir_ls.language_server']},
+    \ 'whitelist': ['elixir', 'eelixir'],
+    \ })
+augroup END
+
+let g:lsp_signs_enabled = 1
+let g:lsp_diagnostics_echo_cursor = 1
+
+" Auto format on saving Elixir
+let g:mix_format_on_save = 1
